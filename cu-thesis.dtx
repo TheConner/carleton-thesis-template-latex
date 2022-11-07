@@ -1,0 +1,560 @@
+% \iffalse meta-comment
+% !TEX program  = pdfLaTeX
+%<*internal>
+\iffalse
+\fi
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input docstrip.tex
+\declarepreamble\readme
+----------------------------------------------------------------
+Copyright 2022 Conner Bradley
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3
+of this license or (at your option) any later version.
+The latest version of this license is in
+  http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of LaTeX
+version 2005/12/01 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Conner Bradley
+
+This work consists of the files cu-thesis.cls
+                                cu-thesis.dtx
+                                cu-thesis.ins
+                                cu-thesis.pdf
+----------------------------------------------------------------
+\endpreamble
+\keepsilent
+\askforoverwritefalse
+
+\usepreamble\readme
+
+\nopostamble
+\usedir{tex/latex/cu-thesis}
+\generate{
+  \file{\jobname.cls}{\from{\jobname.dtx}{package}}
+}
+%</install>
+%<install>\endbatchfile
+%<*internal>
+\usedir{source/latex/cu-thesis}
+\generate{
+  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+\nopreamble\nopostamble
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%</internal>
+%<*driver>
+\ProvidesFile{cu-thesis.dtx}
+%</driver>
+%<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<class>\ProvidesClass{cu-thesis}
+%<*class>
+    [2022/11/04 v1.0 document class for typesetting theses]
+%</class>
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\EnableCrossrefs         
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{cu-thesis.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v1.0}{2004/11/05}{Initial version}
+%
+% \GetFileInfo{cu-thesis.dtx}
+%
+% \DoNotIndex{\newcommand,\newenvironment}
+% 
+%
+% \title{The \textsf{cu-thesis} class\thanks{This document
+%   corresponds to \textsf{cu-thesis}~\fileversion, dated \filedate.}}
+% \author{Conner Bradley \\ \texttt{bradley@advtech.ca}}
+%
+% \maketitle
+%
+% \section{Introduction}
+%
+% This is documentation for the \texttt{cu-thesis} class, a \LaTeX\ document class that conforms the Carleton University's \href{https://gradstudents.carleton.ca/resources-page/thesis-requirements/formatting-guidelines/}{thesis formatting guidelines}. There have been prior efforts to create a package that formats a document to Carleton's guidelines; however, these prior efforts either clash with newer \LaTeX\ document classes, or fail to meet the thesis formatting requirements. This package attempts to extend these prior efforts by integrating them with the \LaTeX\ \texttt{book} and KOMA-script \texttt{scrbook} document classes to provide a cleaner end-user experience. We used one prior implementation\footnote{\href{This package from Babak Esfandiari}{http://www.sce.carleton.ca/faculty/esfandiari/ThesisTemplate.zip} which is based off the cam-thesis class} as a starting point and extended off of it, porting it into a document class with an extended feature set.
+%
+%
+% \section{Usage}
+%
+% Simply use \texttt{cu-thesis} as a document class. Provide arguments that you see fit, either ones that are specific to the \texttt{cu-thesis} class, or ones that are from the base class (book, scrbook) that you select. Customization of various aspects of the document (thesis title, degree, etc.) are done through configuration macros described below.
+% \begin{verbatim} 
+% \documentclass[{ARGS}]{cu-thesis}
+% \end{verbatim}
+%
+% \subsection{Class arguments}
+%
+% \DescribeMacro{scrbook} use the KOMA-script scrbook class instead of book.
+% \DescribeMacro{listoffigures} places a list of figures after the table of contents.
+% \DescribeMacro{listoftables} places a list of tables after the table of contents.
+% \DescribeMacro{glossary} places a list of tables after the table of contents.
+%
+% \subsection{Input Macros}
+% The following macros are used to set inputs to the various templates this class provides.
+%
+% \DescribeMacro{\title}
+% This macro sets the document title which is used in the title page and PDF metadata.
+%
+% \DescribeMacro{\author}
+% This macro sets the author's name which is used in the title page and PDF metadata.
+%
+% \DescribeMacro{\thesistype}
+% This macro sets the type of thesis as shown in the title.
+%
+% \DescribeMacro{\submittedto}
+% This optional macro sets who the thesis was submitted to, the default value is ``the Faculty of Graduate and Postdoctoral Affairs''.
+%
+% \DescribeMacro{\degree}
+% This macro sets the degree that the thesis counts towards as shown in the title.
+%
+% \DescribeMacro{\program}
+% This macro sets the program that the degree applies to in the title.
+%
+% \DescribeMacro{\submissionnotice}
+% This (optional) macro can be used to override the submission notice in the title page. By default, the submission notice is ``A \{thesistype\} submitted to \{submittedto\} in partial fulfillment of the requirements for the degree of''.
+%
+% \DescribeMacro{\institution}
+% This (optional) macro describes the institution the thesis took place, default value is ``Carleton University''.
+%
+% \DescribeMacro{\location}
+% This (optional) macro describes the location of the institution, default value is ``Ottawa, Ontario''.
+%
+% \DescribeMacro{\abstract}
+% This macro sets the abstract for the thesis, which is rendered by the \texttt{\\frontmatter} command.
+%
+% \DescribeMacro{\acknowledgements}
+% This macro sets the acknowledgements for the thesis, which is rendered by the \texttt{\\frontmatter} command.
+%
+% 
+%
+% \subsection{Utilities and Formatting}
+%
+% \DescribeMacro{\frontmatter}
+% This macro creates the frontmatter of the document, which consists of
+%\begin{itemize}
+% \item Title page
+% \item Abstract
+% \item Acknowledgements
+% \item Table of Contents 
+% \item List of Tables (if \texttt{listoftables} option is set)
+% \item List of Illustrations (if \texttt{listoffigures} option is set)
+% \item List of Appendices (if \texttt{glossary} option is set)
+%\end{itemize}
+%
+%
+% \StopEventually{\PrintChanges\PrintIndex}
+%
+% \section{Example Document}
+% Here is an example document that uses this class.
+% \begin{verbatim}
+%    \documentclass{cu-thesis}
+%    \begin{document}
+%        Hello, world!
+%    \end{document}
+% \end{verbatim}
+%
+% \section{Implementation}
+% \iffalse
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  cu-thesis implementation  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \fi
+% First off, declare a simple (internal) macro for creating simple boolean options.
+%    \begin{macrocode}
+\newcommand{\cu@boolopt}[1]{%
+    \expandafter\newif\csname ifcu@#1\endcsname\csname cu@#1false\endcsname%
+    \DeclareOption{#1}{\csname cu@#1true\endcsname}%
+}
+%    \end{macrocode}
+% Next,
+%% declare all package options
+%    \begin{macrocode}
+%% scrbook - use the KOMA-script scrbook class instead of book
+%
+\cu@boolopt{scrbook}
+
+%% listoffigures - puts the list of figures (after the TOC).
+%
+\cu@boolopt{listoffigures}
+
+%% listoftables - puts the list of tables (after the TOC).
+%
+\cu@boolopt{listoftables}
+
+%% glossary - puts the glossary (after the TOC).
+%
+\cu@boolopt{glossary}
+
+%% index - puts the index at the end of the thesis.
+%
+\cu@boolopt{withindex}
+
+%% final - puts the index at the end of the thesis.
+%
+\cu@boolopt{final}
+%    \end{macrocode}
+% 
+%
+%% For ease of use we will use the default \LaTeX \texttt{book} class. More advanced users may prefer to use KOMA-scripts \texttt{scrbook} class, which is also supported.
+%%
+%% The \texttt{book} and \texttt{scrbook} class arguments are not perfectly compatible, thus we have to conditionally enable some flags in certain classes.
+% 
+%    \begin{macrocode}
+\newcommand{\cu@idocclass}{book}
+\ifcu@scrbook
+    \renewcommand{\cu@idocclass}{scrbook}
+\fi
+\PassOptionsToClass{oneside}{\cu@idocclass}
+\PassOptionsToClass{12pt}{\cu@idocclass}
+\ifcu@final
+    \PassOptionsToClass{final}{\cu@idocclass}
+\fi
+%    \end{macrocode}
+%% A noteworthy snippet: all undefined options get passed through to the
+%% underlying document class. This way, you can directly interact with all 
+%% documented options for the document class we are building on.
+%    \begin{macrocode}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{\cu@idocclass}}
+%    \end{macrocode}
+%    \begin{macrocode}
+\ProcessOptions\relax
+\LoadClass{\cu@idocclass}
+
+\raggedbottom
+%    \end{macrocode}
+% 
+%% At this point our document class is loaded. We can load in helpful dependencies we need.
+%
+%    \begin{macrocode}
+\RequirePackage{xparse}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{calc}
+\RequirePackage[
+    pdffitwindow=true,
+    pdfpagelabels=true,
+    colorlinks=false,
+    pdfborder={0 0 0},
+    pdfusetitle=true
+]{hyperref}
+\RequirePackage[all]{hypcap} 
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifcu@glossary
+    \RequirePackage[toc,nonumberlist,acronyms]{glossaries}
+    \makeglossaries%
+    \setglossarystyle{listdotted}
+\fi
+%    \end{macrocode}
+%
+%% For page formatting, refer to the following Carleton guidelines for thesis formatting
+% \blockquote{
+%% All written and illustrative material on an 8 1\"\ x 11\"\ page, including page
+%% numbers, must fall within the following margins: one and one-half inches on 
+%% the left margin and one full inch on the other three sides. Margins may be 
+%% wider but not narrower than the stated requirements.
+%%
+%% For theses written in landscape format, please allow one and one-half inches
+%% on the top margin and one full inch on the other three sides.
+%}
+% 
+%% Within this context, use the \texttt{geometry} package to format the page within these bounds. A noteworthy point is that all text \textit{including page numbers} must fall within these margins.
+%    \begin{macrocode}
+\RequirePackage[letterpaper]{geometry}
+\newlength{\cu@bottom}
+\newlength{\cu@marginparwidth}
+\let\oldgeometry\geometry
+\let\oldnewgeometry\newgeometry
+\renewcommand{\geometry}[5][0.7]{
+    \setlength{\cu@marginparwidth}{#2}
+    \addtolength{\cu@marginparwidth}{-2.5mm}
+    \setlength{\cu@bottom}{#5}
+    \oldgeometry{letterpaper,left=#2,right=#3,top=#4,
+        bottom=\cu@bottom+#1\cu@bottom,
+        footskip=#1\cu@bottom,
+        marginparwidth=\cu@marginparwidth,
+        marginparsep=2mm
+        }
+}
+\renewcommand{\newgeometry}[5][0.7]{
+    \setlength{\cu@marginparwidth}{#2}
+    \addtolength{\cu@marginparwidth}{-2.5mm}
+    \setlength{\cu@bottom}{#5}
+    \oldnewgeometry{left=#2,right=#3,top=#4,
+    bottom=\cu@bottom+#1\cu@bottom,
+    footskip=#1\cu@bottom,
+    marginparwidth=\cu@marginparwidth,
+    marginparsep=2mm
+    }
+}
+\geometry{1.5in}{1in}{1in}{1in}
+\reversemarginpar
+%    \end{macrocode}
+%% Next is the line spacing (double), straightforward
+%    \begin{macrocode}
+\RequirePackage[doublespacing]{setspace}
+%    \end{macrocode}
+
+%% Environments used to fill sections of the thesis
+%%
+%% We can create a macro that helps with generating these. Use xparse to create
+%% these commands, as it easily lets us define a second optional argument.
+%    \begin{macrocode}
+\NewDocumentCommand{\cu@isectioninput}{ m o }{%
+    %\expandafter\newif\csname ifcu@input#1\endcsname\csname cu@input#1false\endcsname%
+    \expandafter\newcommand\csname cu@input#1\endcsname{#2}%
+    \expandafter\newcommand\csname #1\endcsname[1]{%
+        %% Confirm that this has been overriden
+        %\expandafter\csname cu@input#1true\endcsname%
+        %% Set the value
+        \expandafter\renewcommand\csname cu@input#1\endcsname{##1}%
+        }
+}
+%    \end{macrocode}
+%% abstract placed at the beginning of the thesis
+%    \begin{macrocode}
+\cu@isectioninput{abstract}
+%    \end{macrocode}
+%% acknowledgements (The text that will be instered into the
+%% acknowledgments of the thesis.)
+%    \begin{macrocode}
+\cu@isectioninput{acknowledgements}
+%    \end{macrocode}
+
+%% institution. Default to Carleton University, but can be overriden if 
+%% you so wish.
+%    \begin{macrocode}
+\cu@isectioninput{institution}[Carleton University]
+%    \end{macrocode}
+
+%% location (The location of the thesis writer's institution, which will appear
+%% just below their name.)
+%    \begin{macrocode}
+\cu@isectioninput{location}[Ottawa, Ontario]
+%    \end{macrocode}
+
+%% keywords (These keywords will appear in the PDF meta-information
+%% called `pdfkeywords`.)
+%    \begin{macrocode}
+\cu@isectioninput{keywords}
+%    \end{macrocode}
+
+%% subjectline (This subject will appear in the PDF meta-information
+%% called `pdfsubject`.)
+%    \begin{macrocode}
+\cu@isectioninput{subjectline}
+%    \end{macrocode}
+
+%% submissiondate (The date of the submission of this thesis.)
+%    \begin{macrocode}
+\cu@isectioninput{submissiondate}
+%    \end{macrocode}
+
+%% type (The type of document, e.g., thesis, thesis proposal, dissertation.)
+%    \begin{macrocode}
+\cu@isectioninput{thesistype}
+%    \end{macrocode}
+
+%% submitted to
+%    \begin{macrocode}
+\cu@isectioninput{submittedto}[the Faculty of Graduate and Postdoctoral Affairs]
+%    \end{macrocode}
+
+%% submissionnotice (The submission notice is shown on the bottom of the
+%% title page.)
+%% Faculty of Graduate and Postdoctoral Affairs
+%    \begin{macrocode}
+\cu@isectioninput{submissionnotice}[A {\cu@inputthesistype} submitted to {\cu@inputsubmittedto}\\ in partial fulfillment of the requirements for the degree of]
+%    \end{macrocode}
+
+%% degree (The degree for which this thesis is written.)
+%    \begin{macrocode}
+\cu@isectioninput{degree}
+%    \end{macrocode}
+
+%% program (The program for which this thesis is written.)
+%    \begin{macrocode}
+\cu@isectioninput{program}
+%    \end{macrocode}
+
+%% Chapter and section numbering
+%    \begin{macrocode}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+%    \end{macrocode}
+
+%% Command to create the title page that follows Carleton's template
+%    \begin{macrocode}
+\newcommand{\cu@maketitle}{
+    \begin{titlepage}
+        \begin{center}
+            {
+                \Large\bfseries
+                \@title
+            }
+            \bigbreak
+            {
+                by
+            }
+            \bigbreak
+            {
+                \Large\bfseries
+                \@author
+            }
+            \vfill
+            {
+                \cu@inputsubmissionnotice
+            }
+            \vfill
+            {
+                \large\bfseries
+                \cu@inputdegree
+            }
+            \bigbreak
+            {
+                in
+            }
+            \bigbreak
+            {
+                \large\bfseries
+                \cu@inputprogram
+            }
+            \vfill
+            {
+                \cu@inputinstitution\\
+                \cu@inputlocation
+            }
+            \vfill
+            {
+                \textcopyright~\cu@inputsubmissiondate\\
+                \@author
+            }
+        \end{center}
+    \end{titlepage}
+}
+%    \end{macrocode}
+
+%% Implementation of command to create the frontmatter
+%% Frontmatter follows the following format
+%\begin{itemize}
+%% \item Title page
+%% \item Abstract
+%% \item Acknowledgements
+%% \item Table of Contents
+%% \item List of Tables
+%% \item List of Illustrations
+%% \item List of Appendices
+%% Start off by creating the frontmatter command, create the title page
+%\end{itemize}
+%    \begin{macrocode}
+\renewcommand{\frontmatter}{
+    \cu@maketitle
+
+%    \end{macrocode}
+    %% Set up the page formatting for the rest of the paper
+%    \begin{macrocode}
+    \pagestyle{plain}
+    \newgeometry[0]{1.5in}{1.5in}{1.5in}{1.5in}
+    \ifcu@final
+    \else
+        \pagenumbering{roman}
+        \setcounter{page}{0}
+        \thispagestyle{empty}
+        \listoftodos
+        \newpage
+    \fi
+    \pagenumbering{roman}
+    \setcounter{page}{0}
+    \thispagestyle{empty}
+
+    \hypersetup{pdfsubject={\cu@inputsubjectline},pdfkeywords={\cu@inputkeywords}}
+
+    \newpage
+    \restoregeometry
+
+%    \end{macrocode}
+    %% Create abstract page
+%    \begin{macrocode}
+    \chapter*{Abstract}
+    \addcontentsline{toc}{chapter}{Abstract}
+    \cu@inputabstract
+    % Acknowledgements
+%    \end{macrocode}
+    %% Create acknowledgements page
+%    \begin{macrocode}
+    \chapter*{Acknowledgements}
+    \addcontentsline{toc}{chapter}{Acknowledgements}
+    \cu@inputacknowledgements{}
+%    \end{macrocode}
+    %% Create TOC
+%    \begin{macrocode}
+    % TOC
+    \tableofcontents
+%    \end{macrocode}
+    %% Create list of tables if option is set
+%    \begin{macrocode}
+    \ifcu@listoftables%
+        \listoftables
+    \fi
+%    \end{macrocode}
+    %% Create list of figures if option is set
+%    \begin{macrocode}
+    \ifcu@listoffigures%
+        \listoffigures
+    \fi
+%    \end{macrocode}
+    %% Create glossaries if option is set
+%    \begin{macrocode}
+    \ifcu@glossary%
+        \printglossaries
+    \fi
+    \newpage
+%    \end{macrocode}
+    %% End of frontmatter, use arabic numbers for rest of thesis. Ready to start chapter 1.
+%    \begin{macrocode}
+    \setcounter{page}{1}
+    \pagenumbering{arabic}
+}
+%    \end{macrocode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \Finale
+\endinput
