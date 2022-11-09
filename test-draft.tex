@@ -1,0 +1,70 @@
+%
+% Demo doc that tests most of the features of the cu-thesis class
+% This version tests the 'draft' option, which generates a editor-optimized 
+% thesis that has some extra features for editing (does not fully comply to Carleton specs)
+%
+\documentclass[
+    draft,
+    scrbook,
+    listoffigures,
+    listoftables,
+    glossary]{cu-thesis}
+
+% Packages for this test doc to generate text and verify figures
+% you probably don't want these
+\usepackage{lipsum}
+
+% Set up bibtex or biblatex here
+\usepackage{cite}
+
+% SETUP: Document Details
+\title{Thesis Title}
+\author{Author Name}
+\date{January 1970}
+
+% The title page uses the following options to piece together the subject line 
+% "A [thesistype] submitted to [submitted to] in partial fullfilment of ... etc
+\thesistype{thesis proposal}
+\submittedto{the thesis proposal committee}
+\degree{Master of Something}
+\program{Degree Program}
+\submissiondate{2022}
+
+% Abstract, acknowledgements
+\abstract{\lipsum[1]}
+\acknowledgements{\lipsum[1]}
+
+% PDF meta-info:
+\subjectline{\@title}
+\keywords{keyword 1, keyword 2, etc.}
+
+\begin{document}
+    % Create the frontmatter (title page, abstract, toc, etc.)
+    \frontmatter
+    \pagestyle{headings}
+    \chapter{First Chapter}
+    \lipsum[1]
+
+    \section*{Lorem Ipsum}
+    \lipsum[3-5]
+
+    \subsection*{Dolor Sit Amet}
+    \lipsum[6-9]
+    \begin{figure}
+        \centering
+        {some figure here}
+        \caption[]{meaningful figure~\cite{nash51}}
+    \end{figure}
+
+    \subsection*{Consectetuer Ddipiscing}
+    \lipsum[10-11]
+
+    \chapter{Second Chapter}
+    \lipsum{12}
+
+    \appendix
+
+    % Bibliography
+    \bibliographystyle{unsrt}
+    \bibliography{test-bib}
+\end{document}

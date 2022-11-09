@@ -5,6 +5,7 @@ This project is my attempt at writing a LaTeX document class that conforms to Ca
 This package offers:
 - Integration with LaTeX's `book` class, and optionally `scrbook`
 - Implementation as a LaTeX document class (not a package, or a messy single TeX file that acts as a template)
+- Generation to a `PDF/A` file for final submission
 - Some more features are planned, those are coming soon 😁
 
 ## Usage

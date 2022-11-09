@@ -124,10 +124,24 @@ This work consists of the files cu-thesis.cls
 %
 % \subsection{Class arguments}
 %
-% \DescribeMacro{scrbook} use the KOMA-script scrbook class instead of book.
-% \DescribeMacro{listoffigures} places a list of figures after the table of contents.
-% \DescribeMacro{listoftables} places a list of tables after the table of contents.
-% \DescribeMacro{glossary} places a list of tables after the table of contents.
+% \DescribeMacro{scrbook} 
+% use the KOMA-script scrbook class instead of book.
+%
+% \DescribeMacro{listoffigures}
+% places a list of figures after the table of contents.
+%
+% \DescribeMacro{listoftables}
+% places a list of tables after the table of contents.
+%
+% \DescribeMacro{glossary}
+% places a list of tables after the table of contents.
+%
+% \DescribeMacro{draft}
+% enables draft features helpful for making revisions, adds a todo section to the thesis. Overlays the left margin of each page with a draft message and timestamp. 
+%
+% \DescribeMacro{final} 
+% disables all draft features and produces a PDF/A format output (PDF/A is required for)
+% 
 %
 % \subsection{Input Macros}
 % The following macros are used to set inputs to the various templates this class provides.
@@ -200,40 +214,46 @@ This work consists of the files cu-thesis.cls
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \fi
 % First off, declare a simple (internal) macro for creating simple boolean options.
+% By default it will create a scoped if block that defaults to false.
+% Also create macros for reading and setting these scoped option macros.
 %    \begin{macrocode}
+\newcommand{\cu@ifbool}[1]{\csname ifcu@#1\endcsname}
+\newcommand{\cu@setbool}[2]{\csname cu@#1#2\endcsname}
 \newcommand{\cu@boolopt}[1]{%
-    \expandafter\newif\csname ifcu@#1\endcsname\csname cu@#1false\endcsname%
+    \expandafter\newif\csname ifcu@#1\endcsname%
+    \csname cu@#1false\endcsname%_
     \DeclareOption{#1}{\csname cu@#1true\endcsname}%
 }
 %    \end{macrocode}
 % Next,
 %% declare all package options
 %    \begin{macrocode}
-%% scrbook - use the KOMA-script scrbook class instead of book
-%
 \cu@boolopt{scrbook}
-
-%% listoffigures - puts the list of figures (after the TOC).
-%
+%    \end{macrocode}
+% List of figures: puts a list of figures after the TOC.
+%    \begin{macrocode}
 \cu@boolopt{listoffigures}
-
-%% listoftables - puts the list of tables (after the TOC).
-%
+%    \end{macrocode}
+% listoftables: puts a list of tables after the TOC.
+%    \begin{macrocode}
 \cu@boolopt{listoftables}
-
-%% glossary - puts the glossary (after the TOC).
-%
+%    \end{macrocode}
+% glossary: puts a glossary after the TOC.
+%    \begin{macrocode}
 \cu@boolopt{glossary}
-
-%% index - puts the index at the end of the thesis.
-%
-\cu@boolopt{withindex}
-
-%% final - puts the index at the end of the thesis.
-%
+%    \end{macrocode}
+% draft - is this a draft revision?
+%    \begin{macrocode}
+\cu@boolopt{draft}
+%    \end{macrocode}
+% final - is this a final revision?
+%    \begin{macrocode}
 \cu@boolopt{final}
 %    \end{macrocode}
-% 
+% Now process the boolean options (more options will be processed after)
+%    \begin{macrocode}
+\ProcessOptions*
+%    \end{macrocode}
 %
 %% For ease of use we will use the default \LaTeX \texttt{book} class. More advanced users may prefer to use KOMA-scripts \texttt{scrbook} class, which is also supported.
 %%
@@ -241,12 +261,12 @@ This work consists of the files cu-thesis.cls
 % 
 %    \begin{macrocode}
 \newcommand{\cu@idocclass}{book}
-\ifcu@scrbook
+\cu@ifbool{scrbook}
     \renewcommand{\cu@idocclass}{scrbook}
 \fi
 \PassOptionsToClass{oneside}{\cu@idocclass}
 \PassOptionsToClass{12pt}{\cu@idocclass}
-\ifcu@final
+\cu@ifbool{final}
     \PassOptionsToClass{final}{\cu@idocclass}
 \fi
 %    \end{macrocode}
@@ -256,11 +276,10 @@ This work consists of the files cu-thesis.cls
 %    \begin{macrocode}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{\cu@idocclass}}
 %    \end{macrocode}
+% Finally, process the remaining options and load the class.
 %    \begin{macrocode}
-\ProcessOptions\relax
+\ProcessOptions*
 \LoadClass{\cu@idocclass}
-
-\raggedbottom
 %    \end{macrocode}
 % 
 %% At this point our document class is loaded. We can load in helpful dependencies we need.
@@ -279,10 +298,16 @@ This work consists of the files cu-thesis.cls
 \RequirePackage[all]{hypcap} 
 %    \end{macrocode}
 %    \begin{macrocode}
-\ifcu@glossary
+\cu@ifbool{glossary}
     \RequirePackage[toc,nonumberlist,acronyms]{glossaries}
     \makeglossaries%
     \setglossarystyle{listdotted}
+\fi
+%    \end{macrocode}
+% Next, for creating PDF/A when in final mode we will use the helpful pdfx package.
+%    \begin{macrocode}
+\cu@ifbool{final}
+    \usepackage[a-1b]{pdfx}
 \fi
 %    \end{macrocode}
 %
@@ -333,14 +358,20 @@ This work consists of the files cu-thesis.cls
 %    \begin{macrocode}
 \RequirePackage[doublespacing]{setspace}
 %    \end{macrocode}
-
+%% Next, deal with some edge case stuff. Scrbook and draft to not mix well. Set draft=false for srcbook.
+%    \begin{macrocode}
+\cu@ifbool{scrbook}
+    \RequirePackage{scrlayer-scrpage}
+    \KOMAoptions{draft=false}
+\fi
+%    \end{macrocode}
 %% Environments used to fill sections of the thesis
 %%
 %% We can create a macro that helps with generating these. Use xparse to create
 %% these commands, as it easily lets us define a second optional argument.
 %    \begin{macrocode}
 \NewDocumentCommand{\cu@isectioninput}{ m o }{%
-    %\expandafter\newif\csname ifcu@input#1\endcsname\csname cu@input#1false\endcsname%
+    %\expandafter\newif\csname cu@ifinput#1\endcsname\csname cu@input#1false\endcsname%
     \expandafter\newcommand\csname cu@input#1\endcsname{#2}%
     \expandafter\newcommand\csname #1\endcsname[1]{%
         %% Confirm that this has been overriden
@@ -488,18 +519,16 @@ This work consists of the files cu-thesis.cls
 %    \begin{macrocode}
 \renewcommand{\frontmatter}{
     \cu@maketitle
-
 %    \end{macrocode}
     %% Set up the page formatting for the rest of the paper
 %    \begin{macrocode}
     \pagestyle{plain}
     \newgeometry[0]{1.5in}{1.5in}{1.5in}{1.5in}
-    \ifcu@final
+    \cu@ifbool{final}
     \else
         \pagenumbering{roman}
         \setcounter{page}{0}
         \thispagestyle{empty}
-        \listoftodos
         \newpage
     \fi
     \pagenumbering{roman}
@@ -532,19 +561,19 @@ This work consists of the files cu-thesis.cls
 %    \end{macrocode}
     %% Create list of tables if option is set
 %    \begin{macrocode}
-    \ifcu@listoftables%
+    \cu@ifbool{listoftables}
         \listoftables
     \fi
 %    \end{macrocode}
     %% Create list of figures if option is set
 %    \begin{macrocode}
-    \ifcu@listoffigures%
+    \cu@ifbool{listoffigures}
         \listoffigures
     \fi
 %    \end{macrocode}
     %% Create glossaries if option is set
 %    \begin{macrocode}
-    \ifcu@glossary%
+    \cu@ifbool{glossary}
         \printglossaries
     \fi
     \newpage
@@ -554,6 +583,20 @@ This work consists of the files cu-thesis.cls
     \setcounter{page}{1}
     \pagenumbering{arabic}
 }
+%    \end{macrocode}
+%% If `draft' is set, we want to clearly label this copy of the thesis as a draft. We include a timestamp in case a reviewer sees multiple revisions of the thesis and needs to differentiate between versions.
+%    \begin{macrocode}
+\cu@ifbool{draft}
+    \RequirePackage{datetime2}
+    \DTMsettimestyle{hmmss}
+    \usepackage[all]{background}
+    \SetBgContents{\color{gray!50!white} [DRAFT: Rev. as of \DTMnow]}
+    \SetBgPosition{current page.west}
+    \SetBgVshift{-1.0cm}
+    \SetBgOpacity{1.0}
+    \SetBgAngle{90.0}
+    \SetBgScale{2.0}
+\fi
 %    \end{macrocode}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \Finale

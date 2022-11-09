@@ -1,18 +1,21 @@
 %
 % Demo doc that tests most of the features of the cu-thesis class
+% This version tests the 'final' option, which generates a PDF/A file for submission
 %
-\documentclass[masters,
+\documentclass[ %% Final will produce PDF/A for submission
+    scrbook,
     listoffigures,
     listoftables, 
-    glossary, 
-    withindex,
-    final]{cu-thesis}
+    glossary]{cu-thesis}
 
 % Packages for this test pdf only, to generate text and verify layout
 % you probably don't want these
 \usepackage{lipsum}
-\usepackage{layout}
+\usepackage{bookmark}
 \usepackage[demo]{graphicx}
+
+% Set up bibtex or biblatex here
+\usepackage{cite}
 
 % SETUP: Document Details
 \title{Thesis Title}
@@ -40,7 +43,7 @@
     \frontmatter
 
     \chapter{First Chapter}
-    \lipsum[1]\layout
+    \lipsum[1]
 
     \section*{Lorem Ipsum}
     \lipsum[3-5]
@@ -50,7 +53,7 @@
     \begin{figure}
         \centering
         \includegraphics[draft]{foo}
-        \caption[]{meaningful fighre}
+        \caption[]{meaningful figure~\cite{nash51}}
     \end{figure}
 
     \subsection*{Consectetuer Ddipiscing}
@@ -63,5 +66,5 @@
 
     % Bibliography
     \bibliographystyle{unsrt}
-    \bibliography{bibliography}
+    \bibliography{test-bib}
 \end{document}
