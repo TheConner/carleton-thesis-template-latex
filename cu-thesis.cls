@@ -25,6 +25,8 @@
 %%                                 cu-thesis.ins
 %%                                 cu-thesis.pdf
 %% ----------------------------------------------------------------
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesClass{cu-thesis}[2022/11/04 v1.0 document class for typesetting theses]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  cu-thesis implementation  %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

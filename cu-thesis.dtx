@@ -59,11 +59,10 @@ This work consists of the files cu-thesis.cls
 %<*driver>
 \ProvidesFile{cu-thesis.dtx}
 %</driver>
-%<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-%<class>\ProvidesClass{cu-thesis}
-%<*class>
-    [2022/11/04 v1.0 document class for typesetting theses]
-%</class>
+%<*package>
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesClass{cu-thesis}[2022/11/04 v1.0 document class for typesetting theses]
+%</package>
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage[utf8]{inputenc}
@@ -208,6 +207,9 @@ This work consists of the files cu-thesis.cls
 % \end{verbatim}
 %
 % \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
 % \iffalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  cu-thesis implementation  %%
@@ -599,5 +601,8 @@ This work consists of the files cu-thesis.cls
 \fi
 %    \end{macrocode}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
 % \Finale
 \endinput

@@ -16,4 +16,4 @@ all: ${PDF} ${PACKAGE}.cls
 	pdflatex $<
 
 clean:
-	rm -f *.log *.out *.idx *.glo *.blg *.bbl *.aux $(PACKAGE).cls $(PACKAGE).ins $(PDF)
+	rm -f *.log *.out *.idx *.glo *.blg *.bbl *.aux *.acn *.fdb_latexmk *.fls *.ist *.lof *.lot *.toc $(PACKAGE).cls $(PACKAGE).ins $(PDF)
