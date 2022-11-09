@@ -12,10 +12,12 @@
 
 % Packages for this test doc to generate text and verify figures
 % you probably don't want these
+\usepackage{blindtext}
 \usepackage{lipsum}
 
 % Set up bibtex or biblatex here
 \usepackage{cite}
+\usepackage{layout}
 
 % SETUP: Document Details
 \title{Thesis Title}
@@ -41,27 +43,14 @@
 \begin{document}
     % Create the frontmatter (title page, abstract, toc, etc.)
     \frontmatter
-    \pagestyle{headings}
-    \chapter{First Chapter}
-    \lipsum[1]
 
-    \section*{Lorem Ipsum}
-    \lipsum[3-5]
+    % Create sample document
+    \Blinddocument
+    Example citation~\cite{nash51}
 
-    \subsection*{Dolor Sit Amet}
-    \lipsum[6-9]
-    \begin{figure}
-        \centering
-        {some figure here}
-        \caption[]{meaningful figure~\cite{nash51}}
-    \end{figure}
-
-    \subsection*{Consectetuer Ddipiscing}
-    \lipsum[10-11]
-
-    \chapter{Second Chapter}
-    \lipsum{12}
-
+    % Show layout for debug purposes 
+    \layout
+    
     \appendix
 
     % Bibliography

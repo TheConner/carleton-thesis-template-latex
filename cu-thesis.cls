@@ -51,7 +51,12 @@
 \newcommand{\cu@idocclass}{book}
 \cu@ifbool{scrbook}
     \renewcommand{\cu@idocclass}{scrbook}
+    \PassOptionsToClass{letterpaper}{\cu@idocclass}
+\else
+    \PassOptionsToClass{paper=letter}{\cu@idocclass}
+    \PassOptionsToClass{pagesize}{\cu@idocclass}
 \fi
+
 \PassOptionsToClass{oneside}{\cu@idocclass}
 \PassOptionsToClass{12pt}{\cu@idocclass}
 \cu@ifbool{final}
@@ -64,9 +69,9 @@
 \ProcessOptions*
 \LoadClass{\cu@idocclass}
 %% At this point our document class is loaded. We can load in helpful dependencies we need.
+\RequirePackage{iftex}
 \RequirePackage{xparse}
 \RequirePackage[utf8]{inputenc}
-\RequirePackage{calc}
 \RequirePackage[
     pdffitwindow=true,
     pdfpagelabels=true,
@@ -81,9 +86,13 @@
     \setglossarystyle{listdotted}
 \fi
 \cu@ifbool{final}
-    \usepackage[a-1b]{pdfx}
+    \ifluatex
+        \RequirePackage{luatex85}
+    \fi
+    \RequirePackage[a-1b]{pdfx}
 \fi
-%% For page formatting, refer to the following Carleton guidelines for thesis formatting
+%% For page formatting, refer to the following Carleton guidelines for thesis
+%% formatting
 %% All written and illustrative material on an 8 1\"\ x 11\"\ page, including page
 %% numbers, must fall within the following margins: one and one-half inches on
 %% the left margin and one full inch on the other three sides. Margins may be
@@ -91,43 +100,35 @@
 %%
 %% For theses written in landscape format, please allow one and one-half inches
 %% on the top margin and one full inch on the other three sides.
-%% Within this context, use the \texttt{geometry} package to format the page within these bounds. A noteworthy point is that all text \textit{including page numbers} must fall within these margins.
-\RequirePackage[letterpaper]{geometry}
-\newlength{\cu@bottom}
-\newlength{\cu@marginparwidth}
-\let\oldgeometry\geometry
-\let\oldnewgeometry\newgeometry
-\renewcommand{\geometry}[5][0.7]{
-    \setlength{\cu@marginparwidth}{#2}
-    \addtolength{\cu@marginparwidth}{-2.5mm}
-    \setlength{\cu@bottom}{#5}
-    \oldgeometry{letterpaper,left=#2,right=#3,top=#4,
-        bottom=\cu@bottom+#1\cu@bottom,
-        footskip=#1\cu@bottom,
-        marginparwidth=\cu@marginparwidth,
-        marginparsep=2mm
-        }
-}
-\renewcommand{\newgeometry}[5][0.7]{
-    \setlength{\cu@marginparwidth}{#2}
-    \addtolength{\cu@marginparwidth}{-2.5mm}
-    \setlength{\cu@bottom}{#5}
-    \oldnewgeometry{left=#2,right=#3,top=#4,
-    bottom=\cu@bottom+#1\cu@bottom,
-    footskip=#1\cu@bottom,
-    marginparwidth=\cu@marginparwidth,
-    marginparsep=2mm
-    }
-}
-\geometry{1.5in}{1in}{1in}{1in}
+%% Within this context, use the \texttt{geometry} package to format the page
+%% within these bounds. A noteworthy point is that all text
+%% \textit{including page numbers} must fall within these margins.
+%%
+%% Doing this is tricky as geometry and koma-packages don't mix well. Use the
+%% pass option to avoid geometry directly interfering with KOMA settings
+\RequirePackage[includefoot,includehead]{geometry}
+\newcommand{\cu@setgeometry}{\geometry{%
+    left=1.5in,
+    right=1in,
+    top=1in,
+    bottom=1in}}
+\cu@ifbool{scrbook}
+    \AfterCalculatingTypearea{\cu@setgeometry}
+    \recalctypearea
+\else
+    \cu@setgeometry
+\fi
 \reversemarginpar
 %% Next is the line spacing (double), straightforward
 \RequirePackage[doublespacing]{setspace}
-%% Next, deal with some edge case stuff. Scrbook and draft to not mix well. Set draft=false for srcbook.
-\cu@ifbool{scrbook}
-    \RequirePackage{scrlayer-scrpage}
-    \KOMAoptions{draft=false}
-\fi
+%% Set up headers and footers using KOMA's scrlayer-scrpage class. This works
+%% with both the book and scrbook class. Ensure that we aren't setting draft
+%% as this will cause rulers to apperar in the header/footer.
+\RequirePackage[automark]{scrlayer-scrpage}
+\KOMAoptions{draft=false}
+\clearpairofpagestyles
+\chead{\headmark}
+\cfoot*{\pagemark}
 %% Environments used to fill sections of the thesis
 %%
 %% We can create a macro that helps with generating these. Use xparse to create
@@ -190,6 +191,7 @@
 
 %% Command to create the title page that follows Carleton's template
 \newcommand{\cu@maketitle}{
+    \newgeometry{margin=1in}
     \begin{titlepage}
         \begin{center}
             {
@@ -235,6 +237,7 @@
             }
         \end{center}
     \end{titlepage}
+    \restoregeometry
 }
 
 %% Implementation of command to create the frontmatter
@@ -250,23 +253,11 @@
 \renewcommand{\frontmatter}{
     \cu@maketitle
     %% Set up the page formatting for the rest of the paper
-    \pagestyle{plain}
-    \newgeometry[0]{1.5in}{1.5in}{1.5in}{1.5in}
-    \cu@ifbool{final}
-    \else
-        \pagenumbering{roman}
-        \setcounter{page}{0}
-        \thispagestyle{empty}
-        \newpage
-    \fi
+    %% A note on page numbering, from the requirements:
+    %% ``Small Roman numerals are used in the preliminary section. All pages are to be numbered except for the title page on which number “i” is implied but not given...''
     \pagenumbering{roman}
-    \setcounter{page}{0}
-    \thispagestyle{empty}
-
-    \hypersetup{pdfsubject={\cu@inputsubjectline},pdfkeywords={\cu@inputkeywords}}
-
-    \newpage
-    \restoregeometry
+    \setcounter{page}{1}
+    \hypersetup{pdftitle={\@title},pdfauthor={\@author},pdfkeywords={\cu@inputkeywords}}
 
     %% Create abstract page
     \chapter*{Abstract}
@@ -276,7 +267,7 @@
     %% Create acknowledgements page
     \chapter*{Acknowledgements}
     \addcontentsline{toc}{chapter}{Acknowledgements}
-    \cu@inputacknowledgements{}
+    \cu@inputacknowledgements
     %% Create TOC
     % TOC
     \tableofcontents
