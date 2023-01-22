@@ -11,7 +11,7 @@ This class offers:
 
 ## Usage
 
-See [test-draft](./test-draft.tex) and [test-final](./test-final.tex) for samples of how to use this document class. [cu-thesis.cls](./cu-thesis.cls) will either need to be installed in your tex path or placed in the same directory as your thesis. 
+See our [examples](./examples/) for samples of how to use this document class. [cu-thesis.cls](./cu-thesis.cls) will either need to be installed in your tex path or placed in the same directory as your thesis. 
 
 ## Contributing
 

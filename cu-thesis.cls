@@ -52,6 +52,7 @@
 \cu@ifbool{scrbook}
     \renewcommand{\cu@idocclass}{scrbook}
     \PassOptionsToClass{letterpaper}{\cu@idocclass}
+    \PassOptionsToClass{headings=standardclasses}{\cu@idocclass}
 \else
     \PassOptionsToClass{paper=letter}{\cu@idocclass}
     \PassOptionsToClass{pagesize}{\cu@idocclass}

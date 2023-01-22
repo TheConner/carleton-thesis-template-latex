@@ -1,14 +1,15 @@
 %
 % Demo doc that tests most of the features of the cu-thesis class
-% This version tests the 'draft' option, which generates a editor-optimized 
-% thesis that has some extra features for editing (does not fully comply to Carleton specs)
+% This version tests the 'final' option, which generates a PDF/A file for submission
 %
-\documentclass[
-    draft,
+% NOTE: if cu-thesis is installed on your system, documentclass can just be cu-thesis
+%
+\documentclass[ %% Final will produce PDF/A for submission
+    final,
     scrbook,
     listoffigures,
-    listoftables,
-    glossary]{cu-thesis}
+    listoftables, 
+    glossary]{../cu-thesis}
 
 % Packages for this test doc to generate text and verify figures
 % you probably don't want these
