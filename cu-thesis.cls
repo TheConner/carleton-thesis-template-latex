@@ -26,7 +26,7 @@
 %%                                 cu-thesis.pdf
 %% ----------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{cu-thesis}[2022/11/04 v1.0 document class for typesetting theses]
+\ProvidesClass{cu-thesis}[2023/07/16 v1.2 document class for typesetting theses]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  cu-thesis implementation  %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,6 +41,7 @@
 \cu@boolopt{scrbook}
 \cu@boolopt{listoffigures}
 \cu@boolopt{listoftables}
+\cu@boolopt{listoflistings}
 \cu@boolopt{glossary}
 \cu@boolopt{draft}
 \cu@boolopt{final}
@@ -53,6 +54,7 @@
     \renewcommand{\cu@idocclass}{scrbook}
     \PassOptionsToClass{letterpaper}{\cu@idocclass}
     \PassOptionsToClass{headings=standardclasses}{\cu@idocclass}
+    \PassOptionsToClass{listof=totoc}{\cu@idocclass}
 \else
     \PassOptionsToClass{paper=letter}{\cu@idocclass}
     \PassOptionsToClass{pagesize}{\cu@idocclass}
@@ -178,7 +180,9 @@
 %% submissionnotice (The submission notice is shown on the bottom of the
 %% title page.)
 %% Faculty of Graduate and Postdoctoral Affairs
-\cu@isectioninput{submissionnotice}[A {\cu@inputthesistype} submitted to {\cu@inputsubmittedto}\\ in partial fulfillment of the requirements for the degree of]
+\cu@isectioninput{submissionnotice}[%
+    A {\cu@inputthesistype} submitted to {\cu@inputsubmittedto}\\%
+    in partial fulfillment of the requirements for the degree of]
 
 %% degree (The degree for which this thesis is written.)
 \cu@isectioninput{degree}
@@ -248,7 +252,8 @@
 %% \item Acknowledgements
 %% \item Table of Contents
 %% \item List of Tables
-%% \item List of Illustrations
+%% \item List of Figures
+%% \item List of Listings (optional if the listings package is loaded)
 %% \item List of Appendices
 %% Start off by creating the frontmatter command, create the title page
 \renewcommand{\frontmatter}{
@@ -279,6 +284,23 @@
     %% Create list of figures if option is set
     \cu@ifbool{listoffigures}
         \listoffigures
+    \fi
+    %% Create list of listings if option is set. A potential todo is to ensure that
+    %% we correctly handle some quirks on scrbook vs plain book. For more information
+    %% refer to the scrbook manual.
+    %%
+    %% We also ensure that the title of the list of listings is ``List of Listings'' and not ``Listings''.
+    %% This is to be consistent with the other ``List of'' sections.
+    %    \begin{macrocode}
+    \cu@ifbool{listoflistings}
+        \@ifpackageloaded{listings}{%
+            \renewcommand\lstlistingname{Listing}%
+            \renewcommand\lstlistlistingname{List of Listings}%
+            \lstlistoflistings%
+        }{\PackageError{cu-thesis}{listings package not loaded}{%
+        The listoflistings option is set but the listings package is not loaded.%
+        Load the package before calling \\frontmatter}%
+        }
     \fi
     %% Create glossaries if option is set
     \cu@ifbool{glossary}

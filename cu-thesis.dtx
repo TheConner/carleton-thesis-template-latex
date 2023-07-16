@@ -61,7 +61,7 @@ This work consists of the files cu-thesis.cls
 %</driver>
 %<*package>
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{cu-thesis}[2023/01/22 v1.1 document class for typesetting theses]
+\ProvidesClass{cu-thesis}[2023/07/16 v1.2 document class for typesetting theses]
 %</package>
 %<*driver>
 \documentclass{ltxdoc}
@@ -96,7 +96,9 @@ This work consists of the files cu-thesis.cls
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v1.0}{2004/11/05}{Initial version}
+% \changes{v1.0}{2022/11/04}{Initial version}
+% \changes{v1.1}{2023/01/22}{Scrbook fixes}
+% \changes{v1.2}{2023/01/22}{Add support for list of listings in TOC}
 %
 % \GetFileInfo{cu-thesis.dtx}
 %
@@ -131,6 +133,9 @@ This work consists of the files cu-thesis.cls
 %
 % \DescribeMacro{listoftables}
 % places a list of tables after the table of contents.
+%
+% \DescribeMacro{listoflistings}
+% places a list of listings after the table of contents. If this option is selected, you must load the listings package.
 %
 % \DescribeMacro{glossary}
 % places a list of tables after the table of contents.
@@ -240,6 +245,10 @@ This work consists of the files cu-thesis.cls
 %    \begin{macrocode}
 \cu@boolopt{listoftables}
 %    \end{macrocode}
+% listoflistings: puts a list of listings after the TOC.
+%    \begin{macrocode}
+\cu@boolopt{listoflistings}
+%    \end{macrocode}
 % glossary: puts a glossary after the TOC.
 %    \begin{macrocode}
 \cu@boolopt{glossary}
@@ -267,6 +276,7 @@ This work consists of the files cu-thesis.cls
     \renewcommand{\cu@idocclass}{scrbook}
     \PassOptionsToClass{letterpaper}{\cu@idocclass}
     \PassOptionsToClass{headings=standardclasses}{\cu@idocclass}
+    \PassOptionsToClass{listof=totoc}{\cu@idocclass}
 \else
     \PassOptionsToClass{paper=letter}{\cu@idocclass}
     \PassOptionsToClass{pagesize}{\cu@idocclass}
@@ -438,7 +448,9 @@ This work consists of the files cu-thesis.cls
 %% title page.)
 %% Faculty of Graduate and Postdoctoral Affairs
 %    \begin{macrocode}
-\cu@isectioninput{submissionnotice}[A {\cu@inputthesistype} submitted to {\cu@inputsubmittedto}\\ in partial fulfillment of the requirements for the degree of]
+\cu@isectioninput{submissionnotice}[%
+    A {\cu@inputthesistype} submitted to {\cu@inputsubmittedto}\\%
+    in partial fulfillment of the requirements for the degree of]
 %    \end{macrocode}
 
 %% degree (The degree for which this thesis is written.)
@@ -518,7 +530,8 @@ This work consists of the files cu-thesis.cls
 %% \item Acknowledgements
 %% \item Table of Contents
 %% \item List of Tables
-%% \item List of Illustrations
+%% \item List of Figures
+%% \item List of Listings (optional if the listings package is loaded)
 %% \item List of Appendices
 %% Start off by creating the frontmatter command, create the title page
 %\end{itemize}
@@ -563,6 +576,24 @@ This work consists of the files cu-thesis.cls
 %    \begin{macrocode}
     \cu@ifbool{listoffigures}
         \listoffigures
+    \fi
+%    \end{macrocode}
+    %% Create list of listings if option is set. A potential todo is to ensure that
+    %% we correctly handle some quirks on scrbook vs plain book. For more information 
+    %% refer to the scrbook manual.
+    %% 
+    %% We also ensure that the title of the list of listings is ``List of Listings'' and not ``Listings''.
+    %% This is to be consistent with the other ``List of'' sections.
+    %    \begin{macrocode}
+    \cu@ifbool{listoflistings}
+        \@ifpackageloaded{listings}{%
+            \renewcommand\lstlistingname{Listing}%
+            \renewcommand\lstlistlistingname{List of Listings}%
+            \lstlistoflistings%
+        }{\PackageError{cu-thesis}{listings package not loaded}{%
+        The listoflistings option is set but the listings package is not loaded.%
+        Load the package before calling \\frontmatter}%
+        }
     \fi
 %    \end{macrocode}
     %% Create glossaries if option is set

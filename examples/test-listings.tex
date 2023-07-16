@@ -1,0 +1,67 @@
+%
+% Test doc for ensuring listoflistings option works as expected
+%
+\documentclass[
+    draft,
+    scrbook,
+    listoffigures,
+    listoflistings,
+    glossary]{../cu-thesis}
+
+\usepackage{listings}
+
+% Packages for this test doc to generate text and verify figures
+% you probably don't want these
+\usepackage{blindtext}
+\usepackage{lipsum}
+
+% Set up bibtex or biblatex here
+\usepackage{cite}
+
+% Layout is only used to show the page layout in this demo doc; you don't need this for a real thesis
+\usepackage{layout}
+
+\addtokomafont{disposition}{\rmfamily}
+
+% SETUP: Document Details
+\title{Thesis Title}
+\author{Author Name}
+\date{January 1970}
+
+% The title page uses the following options to piece together the subject line 
+% "A [thesistype] submitted to [submitted to] in partial fullfilment of ... etc
+\thesistype{thesis proposal}
+\submittedto{the thesis proposal committee}
+\degree{Master of Something}
+\program{Degree Program}
+\submissiondate{2022}
+
+% Abstract, acknowledgements
+\abstract{\lipsum[1]}
+\acknowledgements{\lipsum[1]}
+
+% PDF meta-info:
+\subjectline{\@title}
+\keywords{keyword 1, keyword 2, etc.}
+
+\begin{document}
+    % Create the frontmatter (title page, abstract, toc, etc.)
+    \frontmatter
+
+    % Create sample document
+    \Blinddocument
+    Example citation~\cite{nash51}
+
+    \begin{lstlisting}[language=Python, caption={Python hello world},label={listing:helloworld}]
+print("Hello world!")
+    \end{lstlisting}
+
+    % Show layout for debug purposes 
+    \layout
+    
+    \appendix
+
+    % Bibliography
+    \bibliographystyle{unsrt}
+    \bibliography{test-bib}
+\end{document}
