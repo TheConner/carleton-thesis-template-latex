@@ -26,7 +26,7 @@
 %%                                 cu-thesis.pdf
 %% ----------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{cu-thesis}[2023/07/16 v1.2 document class for typesetting theses]
+\ProvidesClass{cu-thesis}[2023/07/21 v1.4 document class for typesetting theses]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  cu-thesis implementation  %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,14 +52,14 @@
 \newcommand{\cu@idocclass}{book}
 \cu@ifbool{scrbook}
     \renewcommand{\cu@idocclass}{scrbook}
-    \PassOptionsToClass{letterpaper}{\cu@idocclass}
+    %% We aren't setting paper size here as it is very very tricky with koma
+    %% script classes, attempts to pass to typearea seem to fail. Thus,
+    %% koma script classes will have their paper size set after \LoadClass
     \PassOptionsToClass{headings=standardclasses}{\cu@idocclass}
     \PassOptionsToClass{listof=totoc}{\cu@idocclass}
 \else
-    \PassOptionsToClass{paper=letter}{\cu@idocclass}
-    \PassOptionsToClass{pagesize}{\cu@idocclass}
+    \PassOptionsToClass{letterpaper}{\cu@idocclass}
 \fi
-
 \PassOptionsToClass{oneside}{\cu@idocclass}
 \PassOptionsToClass{12pt}{\cu@idocclass}
 \cu@ifbool{final}
@@ -69,8 +69,12 @@
 %% underlying document class. This way, you can directly interact with all
 %% documented options for the document class we are building on.
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{\cu@idocclass}}
-\ProcessOptions*
+\ProcessOptions\relax
 \LoadClass{\cu@idocclass}
+%% For koma-script classes, we can now set paper size...
+\cu@ifbool{scrbook}
+    \KOMAoptions{paper=letter,pagesize,paper=portrait}
+\fi
 %% At this point our document class is loaded. We can load in helpful dependencies we need.
 \RequirePackage{iftex}
 \RequirePackage{xparse}
@@ -237,8 +241,7 @@
             }
             \vfill
             {
-                \textcopyright~\cu@inputsubmissiondate\\
-                \@author
+                \textcopyright~\cu@inputsubmissiondate,~\@author
             }
         \end{center}
     \end{titlepage}

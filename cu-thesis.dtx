@@ -61,7 +61,7 @@ This work consists of the files cu-thesis.cls
 %</driver>
 %<*package>
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{cu-thesis}[2023/07/16 v1.2 document class for typesetting theses]
+\ProvidesClass{cu-thesis}[2023/07/21 v1.4 document class for typesetting theses]
 %</package>
 %<*driver>
 \documentclass{ltxdoc}
@@ -98,7 +98,8 @@ This work consists of the files cu-thesis.cls
 %
 % \changes{v1.0}{2022/11/04}{Initial version}
 % \changes{v1.1}{2023/01/22}{Scrbook fixes}
-% \changes{v1.2}{2023/01/22}{Add support for list of listings in TOC}
+% \changes{v1.2}{2023/06/16}{Add support for list of listings in TOC}
+% \changes{v1.3}{2023/06/21}{Fix copyright author line in title page, fix page size on KOMA script variant}
 %
 % \GetFileInfo{cu-thesis.dtx}
 %
@@ -274,14 +275,14 @@ This work consists of the files cu-thesis.cls
 \newcommand{\cu@idocclass}{book}
 \cu@ifbool{scrbook}
     \renewcommand{\cu@idocclass}{scrbook}
-    \PassOptionsToClass{letterpaper}{\cu@idocclass}
+    %% We aren't setting paper size here as it is very very tricky with koma
+    %% script classes, attempts to pass to typearea seem to fail. Thus,
+    %% koma script classes will have their paper size set after \LoadClass
     \PassOptionsToClass{headings=standardclasses}{\cu@idocclass}
     \PassOptionsToClass{listof=totoc}{\cu@idocclass}
 \else
-    \PassOptionsToClass{paper=letter}{\cu@idocclass}
-    \PassOptionsToClass{pagesize}{\cu@idocclass}
+    \PassOptionsToClass{letterpaper}{\cu@idocclass}
 \fi
-
 \PassOptionsToClass{oneside}{\cu@idocclass}
 \PassOptionsToClass{12pt}{\cu@idocclass}
 \cu@ifbool{final}
@@ -296,10 +297,16 @@ This work consists of the files cu-thesis.cls
 %    \end{macrocode}
 % Finally, process the remaining options and load the class.
 %    \begin{macrocode}
-\ProcessOptions*
+\ProcessOptions\relax
 \LoadClass{\cu@idocclass}
 %    \end{macrocode}
 % 
+%% For koma-script classes, we can now set paper size...
+%    \begin{macrocode}
+\cu@ifbool{scrbook}
+    \KOMAoptions{paper=letter,pagesize,paper=portrait}
+\fi
+%    \end{macrocode}
 %% At this point our document class is loaded. We can load in helpful dependencies we need.
 %
 %    \begin{macrocode}
@@ -513,8 +520,7 @@ This work consists of the files cu-thesis.cls
             }
             \vfill
             {
-                \textcopyright~\cu@inputsubmissiondate\\
-                \@author
+                \textcopyright~\cu@inputsubmissiondate,~\@author
             }
         \end{center}
     \end{titlepage}
