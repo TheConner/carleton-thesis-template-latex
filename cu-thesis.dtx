@@ -1,5 +1,4 @@
 % \iffalse meta-comment
-% !TEX program  = pdfLaTeX
 %<*internal>
 \iffalse
 \fi
@@ -40,7 +39,7 @@ This work consists of the files cu-thesis.cls
 \nopostamble
 \usedir{tex/latex/cu-thesis}
 \generate{
-  \file{\jobname.cls}{\from{\jobname.dtx}{package}}
+  \file{\jobname.cls}{\from{\jobname.dtx}{cuthesis}}
 }
 %</install>
 %<install>\endbatchfile
@@ -56,15 +55,12 @@ This work consists of the files cu-thesis.cls
   \expandafter\endgroup
 \fi
 %</internal>
-%<*driver>
-\ProvidesFile{cu-thesis.dtx}
-%</driver>
-%<*package>
+%<*cuthesis>
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{cu-thesis}[2023/07/21 v1.4 document class for typesetting theses]
-%</package>
+\ProvidesClass{cu-thesis}[2023/09/07 v1.4 document class for typesetting theses]
+%</cuthesis>
 %<*driver>
-\documentclass{ltxdoc}
+\documentclass[letterpaper]{ltxdoc}
 \usepackage[utf8]{inputenc}
 \usepackage{csquotes}
 \usepackage{hyperref}
@@ -100,8 +96,9 @@ This work consists of the files cu-thesis.cls
 % \changes{v1.1}{2023/01/22}{Scrbook fixes}
 % \changes{v1.2}{2023/06/16}{Add support for list of listings in TOC}
 % \changes{v1.3}{2023/06/21}{Fix copyright author line in title page, fix page size on KOMA script variant}
+% \changes{v1.4}{2023/09/07}{Fix title page to allow for degree and program to be overriden, this is useful where degree and program are the same}
 %
-% \GetFileInfo{cu-thesis.dtx}
+% \GetFileInfo{cu-thesis.cls}
 %
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
@@ -169,6 +166,12 @@ This work consists of the files cu-thesis.cls
 % \DescribeMacro{\program}
 % This macro sets the program that the degree applies to in the title.
 %
+% \DescribeMacro{\degreeprogram}
+% This macro overrides ``degree'' and ``program'' with a 
+% single-line degree and program. Use this option if your degree and program are
+% the same.
+% 
+%
 % \DescribeMacro{\submissionnotice}
 % This (optional) macro can be used to override the submission notice in the title page. By default, the submission notice is ``A \{thesistype\} submitted to \{submittedto\} in partial fulfillment of the requirements for the degree of''.
 %
@@ -201,7 +204,7 @@ This work consists of the files cu-thesis.cls
 %\end{itemize}
 %
 %
-% \StopEventually{\PrintChanges\PrintIndex}
+% \StopEventually{\PrintChanges}
 %
 % \section{Example Document}
 % Here is an example document that uses this class.
@@ -214,7 +217,7 @@ This work consists of the files cu-thesis.cls
 %
 % \section{Implementation}
 %    \begin{macrocode}
-%<*package>
+%<*cuthesis>
 %    \end{macrocode}
 % \iffalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -267,9 +270,13 @@ This work consists of the files cu-thesis.cls
 \ProcessOptions*
 %    \end{macrocode}
 %
-%% For ease of use we will use the default \LaTeX \texttt{book} class. More advanced users may prefer to use KOMA-scripts \texttt{scrbook} class, which is also supported.
+%% For ease of use we will use the default \LaTeX \texttt{book} class. More 
+%% advanced users may prefer to use KOMA-scripts \texttt{scrbook} class, which
+%% is also supported.
 %%
-%% The \texttt{book} and \texttt{scrbook} class arguments are not perfectly compatible, thus we have to conditionally enable some flags in certain classes.
+%% The \texttt{book} and \texttt{scrbook} class arguments are not perfectly
+%% compatible, thus we have to conditionally enable some flags in certain
+%% classes.
 % 
 %    \begin{macrocode}
 \newcommand{\cu@idocclass}{book}
@@ -307,7 +314,8 @@ This work consists of the files cu-thesis.cls
     \KOMAoptions{paper=letter,pagesize,paper=portrait}
 \fi
 %    \end{macrocode}
-%% At this point our document class is loaded. We can load in helpful dependencies we need.
+%% At this point our document class is loaded. We can load in helpful 
+%% dependencies we need.
 %
 %    \begin{macrocode}
 \RequirePackage{iftex}
@@ -329,7 +337,8 @@ This work consists of the files cu-thesis.cls
     \setglossarystyle{listdotted}
 \fi
 %    \end{macrocode}
-% Next, for creating PDF/A when in final mode we will use the helpful pdfx package.
+% Next, for creating PDF/A when in final mode we will use the helpful pdfx 
+%% package.
 %    \begin{macrocode}
 \cu@ifbool{final}
     \ifluatex
@@ -396,7 +405,7 @@ This work consists of the files cu-thesis.cls
     \expandafter\newcommand\csname cu@input#1\endcsname{#2}%
     \expandafter\newcommand\csname #1\endcsname[1]{%
         %% Confirm that this has been overriden
-        %\expandafter\csname cu@input#1true\endcsname%
+        \expandafter\csname cu@input#1true\endcsname%
         %% Set the value
         \expandafter\renewcommand\csname cu@input#1\endcsname{##1}%
         }
@@ -470,6 +479,21 @@ This work consists of the files cu-thesis.cls
 \cu@isectioninput{program}
 %    \end{macrocode}
 
+% There are cases where we will want to change how the degree and program is
+% formatted. From Carleton's guidelines:
+%
+% ``In the program name do not include other information referring to Department
+% , School, Institute or Faculty. If the program name is the same as the degree 
+% it is not necessary to repeat it (e.g. Master of Journalism).''
+%
+% In these instances, use the degreeprogram option. This will let you specify 
+% the degree and program together, which will override the \texttt{degree} and 
+% \texttt{program} options.
+%% degreeprogram (override degree and program with some other text)
+%    \begin{macrocode}
+\cu@isectioninput{degreeprogram}
+%    \end{macrocode}
+
 %% Chapter and section numbering
 %    \begin{macrocode}
 \setcounter{secnumdepth}{3}
@@ -500,19 +524,26 @@ This work consists of the files cu-thesis.cls
                 \cu@inputsubmissionnotice
             }
             \vfill
-            {
-                \large\bfseries
-                \cu@inputdegree
-            }
-            \bigbreak
-            {
-                in
-            }
-            \bigbreak
-            {
-                \large\bfseries
-                \cu@inputprogram
-            }
+            \ifcsname cu@inputdegreeprogramtrue\endcsname%
+                {
+                    \large\bfseries
+                    \cu@inputdegreeprogram
+                }
+            \else
+                {
+                    \large\bfseries
+                    \cu@inputdegree
+                }
+                \bigbreak
+                {
+                    in
+                }
+                \bigbreak
+                {
+                    \large\bfseries
+                    \cu@inputprogram
+                }
+            \fi
             \vfill
             {
                 \cu@inputinstitution\\
@@ -539,8 +570,8 @@ This work consists of the files cu-thesis.cls
 %% \item List of Figures
 %% \item List of Listings (optional if the listings package is loaded)
 %% \item List of Appendices
-%% Start off by creating the frontmatter command, create the title page
 %\end{itemize}
+%% Start off by creating the frontmatter command, create the title page
 %    \begin{macrocode}
 \renewcommand{\frontmatter}{
     \cu@maketitle
@@ -584,13 +615,13 @@ This work consists of the files cu-thesis.cls
         \listoffigures
     \fi
 %    \end{macrocode}
-    %% Create list of listings if option is set. A potential todo is to ensure that
-    %% we correctly handle some quirks on scrbook vs plain book. For more information 
-    %% refer to the scrbook manual.
-    %% 
-    %% We also ensure that the title of the list of listings is ``List of Listings'' and not ``Listings''.
-    %% This is to be consistent with the other ``List of'' sections.
-    %    \begin{macrocode}
+%% Create list of listings if option is set. A potential todo is to ensure that
+%% we correctly handle some quirks on scrbook vs plain book. For more information 
+%% refer to the scrbook manual.
+%% 
+%% We also ensure that the title of the list of listings is ``List of Listings'' and not ``Listings''.
+%% This is to be consistent with the other ``List of'' sections.
+%    \begin{macrocode}
     \cu@ifbool{listoflistings}
         \@ifpackageloaded{listings}{%
             \renewcommand\lstlistingname{Listing}%
@@ -631,7 +662,7 @@ This work consists of the files cu-thesis.cls
 %    \end{macrocode}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    \begin{macrocode}
-%</package>
+%</cuthesis>
 %    \end{macrocode}
 % \Finale
 \endinput

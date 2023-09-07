@@ -4,7 +4,7 @@
 %%
 %% The original source files were:
 %%
-%% cu-thesis.dtx  (with options: `package')
+%% cu-thesis.dtx  (with options: `cuthesis')
 %% ----------------------------------------------------------------
 %% Copyright 2022 Conner Bradley
 %% 
@@ -26,7 +26,7 @@
 %%                                 cu-thesis.pdf
 %% ----------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{cu-thesis}[2023/07/21 v1.4 document class for typesetting theses]
+\ProvidesClass{cu-thesis}[2023/09/07 v1.4 document class for typesetting theses]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  cu-thesis implementation  %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,9 +46,13 @@
 \cu@boolopt{draft}
 \cu@boolopt{final}
 \ProcessOptions*
-%% For ease of use we will use the default \LaTeX \texttt{book} class. More advanced users may prefer to use KOMA-scripts \texttt{scrbook} class, which is also supported.
+%% For ease of use we will use the default \LaTeX \texttt{book} class. More
+%% advanced users may prefer to use KOMA-scripts \texttt{scrbook} class, which
+%% is also supported.
 %%
-%% The \texttt{book} and \texttt{scrbook} class arguments are not perfectly compatible, thus we have to conditionally enable some flags in certain classes.
+%% The \texttt{book} and \texttt{scrbook} class arguments are not perfectly
+%% compatible, thus we have to conditionally enable some flags in certain
+%% classes.
 \newcommand{\cu@idocclass}{book}
 \cu@ifbool{scrbook}
     \renewcommand{\cu@idocclass}{scrbook}
@@ -75,7 +79,8 @@
 \cu@ifbool{scrbook}
     \KOMAoptions{paper=letter,pagesize,paper=portrait}
 \fi
-%% At this point our document class is loaded. We can load in helpful dependencies we need.
+%% At this point our document class is loaded. We can load in helpful
+%% dependencies we need.
 \RequirePackage{iftex}
 \RequirePackage{xparse}
 \RequirePackage[utf8]{inputenc}
@@ -92,6 +97,7 @@
     \makeglossaries%
     \setglossarystyle{listdotted}
 \fi
+%% package.
 \cu@ifbool{final}
     \ifluatex
         \RequirePackage{luatex85}
@@ -145,7 +151,7 @@
     \expandafter\newcommand\csname cu@input#1\endcsname{#2}%
     \expandafter\newcommand\csname #1\endcsname[1]{%
         %% Confirm that this has been overriden
-        %\expandafter\csname cu@input#1true\endcsname%
+        \expandafter\csname cu@input#1true\endcsname%
         %% Set the value
         \expandafter\renewcommand\csname cu@input#1\endcsname{##1}%
         }
@@ -194,6 +200,9 @@
 %% program (The program for which this thesis is written.)
 \cu@isectioninput{program}
 
+%% degreeprogram (override degree and program with some other text)
+\cu@isectioninput{degreeprogram}
+
 %% Chapter and section numbering
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -221,19 +230,26 @@
                 \cu@inputsubmissionnotice
             }
             \vfill
-            {
-                \large\bfseries
-                \cu@inputdegree
-            }
-            \bigbreak
-            {
-                in
-            }
-            \bigbreak
-            {
-                \large\bfseries
-                \cu@inputprogram
-            }
+            \ifcsname cu@inputdegreeprogramtrue\endcsname%
+                {
+                    \large\bfseries
+                    \cu@inputdegreeprogram
+                }
+            \else
+                {
+                    \large\bfseries
+                    \cu@inputdegree
+                }
+                \bigbreak
+                {
+                    in
+                }
+                \bigbreak
+                {
+                    \large\bfseries
+                    \cu@inputprogram
+                }
+            \fi
             \vfill
             {
                 \cu@inputinstitution\\
@@ -288,13 +304,12 @@
     \cu@ifbool{listoffigures}
         \listoffigures
     \fi
-    %% Create list of listings if option is set. A potential todo is to ensure that
-    %% we correctly handle some quirks on scrbook vs plain book. For more information
-    %% refer to the scrbook manual.
-    %%
-    %% We also ensure that the title of the list of listings is ``List of Listings'' and not ``Listings''.
-    %% This is to be consistent with the other ``List of'' sections.
-    %    \begin{macrocode}
+%% Create list of listings if option is set. A potential todo is to ensure that
+%% we correctly handle some quirks on scrbook vs plain book. For more information
+%% refer to the scrbook manual.
+%%
+%% We also ensure that the title of the list of listings is ``List of Listings'' and not ``Listings''.
+%% This is to be consistent with the other ``List of'' sections.
     \cu@ifbool{listoflistings}
         \@ifpackageloaded{listings}{%
             \renewcommand\lstlistingname{Listing}%

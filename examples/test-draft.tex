@@ -34,8 +34,18 @@
 % "A [thesistype] submitted to [submitted to] in partial fullfilment of ... etc
 \thesistype{thesis proposal}
 \submittedto{the thesis proposal committee}
-\degree{Master of Something}
-\program{Degree Program}
+
+%% To specify a degree and program if the degree and program are different
+% \degree{Master of Something}
+% \program{Degree Program}
+
+% You can also use \degreeprogram to specify your degree and program together
+% this is useful if your degree and program are the same
+% E.g., to avoid "Master's of Computer Science in Computer Science"
+%   you can use \degreeprogram{Master's of Computer Science}
+% this overrides \degree and \program
+\degreeprogram{Master of Something}
+
 \submissiondate{2022}
 
 % Abstract, acknowledgements

@@ -13,7 +13,10 @@ all: ${PDF} ${PACKAGE}.cls
 	do pdflatex $<; done
 
 %.cls: %.dtx
-	pdflatex $<
+	pdflatex $< 
+	makeindex -s gind.ist $*.idx
+	makeindex -s gglo.ist $*.glo -o $*.gls
+	pdflatex $< 
 
 clean:
 	rm -f *.log *.out *.idx *.glo *.blg *.bbl *.aux *.acn *.fdb_latexmk *.fls *.ist *.lof *.lot *.toc $(PACKAGE).cls $(PACKAGE).ins $(PDF)
